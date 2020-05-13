@@ -1,0 +1,8 @@
+GET http://localhost/participants/{{id}}
+
+###
+
+POST http://localhost/participants/
+
+###
+

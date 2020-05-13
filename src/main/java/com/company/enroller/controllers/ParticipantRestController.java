@@ -44,7 +44,7 @@ public class ParticipantRestController {
 
 		Collection<Participant> participants = participantService.getAll();
 
-		return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK);
+		return new ResponseEntity<>(participants, HttpStatus.OK);
 
 	}
 
@@ -62,7 +62,7 @@ public class ParticipantRestController {
 		}
 
 
-		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
+		return new ResponseEntity<>(participant, HttpStatus.OK);
 
 	}
 
@@ -85,7 +85,7 @@ public class ParticipantRestController {
 
 		participantService.add(participant);
 
-		return new ResponseEntity<Participant>(participant, HttpStatus.CREATED);
+		return new ResponseEntity<>(participant, HttpStatus.CREATED);
 
 	}
 
@@ -105,7 +105,7 @@ public class ParticipantRestController {
 
 		participantService.delete(participant);
 
-		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
+		return new ResponseEntity<>(participant, HttpStatus.OK);
 
 		//return new ResponseEntity<Participant>(HttpStatus.NO_CONTENT);
 
