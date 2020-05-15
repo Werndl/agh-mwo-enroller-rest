@@ -45,7 +45,7 @@ public class MeetingRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getMeeting(@PathVariable("id") long id) {
         Meeting meeting = meetingService.findById(id);
-        return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
+        return new ResponseEntity<>(meeting, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -55,14 +55,13 @@ public class MeetingRestController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         meetingService.delete(meeting);
-        return new ResponseEntity<Meeting>(meeting, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(meeting, HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> addMeeting(@RequestBody Meeting meeting) {
         if (meetingService.alreadyExist(meeting)) {
-            return new ResponseEntity<>("Unable to add. A meeting with title " + meeting.getTitle() + " and date "
-                    + meeting.getDate() + " already exist.", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Unable to add. A meeting with title " + meeting.getTitle() + " already exist.", HttpStatus.CONFLICT);
         }
         meetingService.add(meeting);
         return new ResponseEntity<>(meeting, HttpStatus.CREATED);
@@ -73,7 +72,14 @@ public class MeetingRestController {
         Meeting currentMeeting = meetingService.findById(id);
         meeting.setId(currentMeeting.getId());
         meetingService.update(meeting);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (currentMeeting == null) {
+            return new ResponseEntity(
+                    "Unable to update. A meeting with id " + meeting.getId() + " not exist.",
+                    HttpStatus.NOT_FOUND);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "{id}/participants", method = RequestMethod.GET)
@@ -88,7 +94,7 @@ public class MeetingRestController {
         Meeting currentMeeting = meetingService.findById(id);
         String login = json.get("login");
         if (login == null) {
-            return new ResponseEntity<String>("Unable to find participant login in the request body",
+            return new ResponseEntity<>("Unable to find participant login in the request body",
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -104,6 +110,11 @@ public class MeetingRestController {
         Participant participant = participantService.findByLogin(login);
         meeting.removeParticipant(participant);
         meetingService.update(meeting);
+        if (participant == null) {
+
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+
+        }
         return new ResponseEntity<>(meeting.getParticipants(), HttpStatus.OK);
     }
 
